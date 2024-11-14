@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de KPIs de Transporte</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-light">
+    <div class="container-fluid py-4">
+        <h1 class="text-center mb-4">Dashboard de KPIs de Transporte</h1>
+
+            <!-- Filtros -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <label for="fechaInicio" class="form-label">Fecha Inicio:</label>
+                <input type="date" id="fechaInicio" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label for="fechaFin" class="form-label">Fecha Fin:</label>
+                <input type="date" id="fechaFin" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label for="ruta" class="form-label">Ruta:</label>
+                <select id="ruta" class="form-select">
+                    <option value="todas">Todas</option>
+                    <option value="Ruta A-B">Ruta A-B</option>
+                    <option value="Ruta C-D">Ruta C-D</option>
+                    <option value="Ruta E-F">Ruta E-F</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="vehiculo" class="form-label">Tipo de Vehículo:</label>
+                <select id="vehiculo" class="form-select">
+                    <option value="todos">Todos</option>
+                    <option value="camion">Camión</option>
+                    <option value="van">Van</option>
+                </select>
+            </div>
+        </div>
+        <div class="row g-4">
+            <!-- KPI 1: Consumo de Combustible -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Consumo de Combustible</h5>
+                        <div class="row align-items-center">
+                            <div class="col-6">
+                                <div class="display-4 text-primary" id="consumo-actual"></div>
+                                <div class="text-muted">L/Km</div>
+                            </div>
+                            <div class="col-6">
+                                <canvas id="consumoChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI 2: Costo de Combustible -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Costo de Combustible por Viaje</h5>
+                        <div class="row align-items-center">
+                            <div class="col-6">
+                                <div class="display-4 text-danger" id="costo-actual"></div>
+                                <div class="text-muted">$/Viaje</div>
+                            </div>
+                            <div class="col-6">
+                                <canvas id="costoChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI 3: Productividad -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Productividad de la Flota</h5>
+                        <div class="row align-items-center">
+                            <div class="col-6">
+                                <div class="display-4 text-success" id="productividad-actual"></div>
+                                <div class="text-muted">Km/Día</div>
+                            </div>
+                            <div class="col-6">
+                                <canvas id="productividadChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI 4: Costo Total -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Costo Total por Kilómetro</h5>
+                        <div class="row align-items-center">
+                            <div class="col-6">
+                                <div class="display-4 text-warning" id="costo-total-actual"></div>
+                                <div class="text-muted">$/Km</div>
+                            </div>
+                            <div class="col-6">
+                                <canvas id="costoTotalChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI 5: Tiempo de Viaje -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Tiempo Promedio de Viaje</h5>
+                        <div class="row align-items-center">
+                            <div class="col-6">
+                                <div class="display-4 text-info" id="tiempo-actual"></div>
+                                <div class="text-muted">Horas</div>
+                            </div>
+                            <div class="col-6">
+                                <canvas id="tiempoChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI 6: Utilización -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Porcentaje de Entrega no Entregada</h5>
+                        <div class="row align-items-center">
+                            <div class="col-6">
+                                <div class="display-4 text-primary" id="no-entregado-actual"></div>
+                                <div class="text-muted">%</div>
+                            </div>
+                            <div class="col-6">
+                                <canvas id="noEntregadoChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos detallados -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Tiempo por Ruta</h5>
+                        <canvas id="tiempoRutaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Tendencia de Costos</h5>
+                        <canvas id="tendenciaCostosChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Obtener los datos de KPIs
+    const kpiData = JSON.parse('{{ kpis_json | safe }}');
+
+    // Función para formatear números
+    function formatNumber(num) {
+        return new Intl.NumberFormat('es-CO').format(num);
+    }
+
+    // Actualizar valores actuales
+    document.getElementById('consumo-actual').textContent = formatNumber(kpiData.consumo_acpm_km);
+    document.getElementById('costo-actual').textContent = formatNumber(kpiData.costo_combustible_viaje);
+    document.getElementById('productividad-actual').textContent = formatNumber(kpiData.productividad_flota);
+    document.getElementById('costo-total-actual').textContent = formatNumber(kpiData.costo_total_km);
+    document.getElementById('tiempo-actual').textContent = formatNumber(kpiData.tiempo_promedio_viaje);
+    document.getElementById('no-entregado-actual').textContent = formatNumber(kpiData.porcentaje_no_entregado);
+
+    // Función para crear gráfico de línea
+    function createLineChart(elementId, data, label, color) {
+        const ctx = document.getElementById(elementId).getContext('2d');
+        return new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Object.keys(data),
+                datasets: [{    
+                    label: label,
+                    data: Object.values(data),
+                    borderColor: color,
+                    fill: false,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Crear gráficos de tendencia
+    createLineChart('consumoChart', kpiData.consumo_mensual, 'Consumo', '#0d6efd');
+    createLineChart('costoChart', kpiData.costo_combustible_viaje_mensual, 'Costo Combustible', '#dc3545');
+    createLineChart('productividadChart', kpiData.productividad_mensual, 'Productividad', '#28a745');
+    createLineChart('costoTotalChart', kpiData.costo_total_km_mensual, 'Costo Total', '#ffc107');
+    createLineChart('tiempoChart', kpiData.tiempo_viaje_mensual, 'Tiempo Promedio', '#17a2b8');
+    createLineChart('noEntregadoChart', kpiData.no_entregado_mensual || {}, 'No Entregado (%)', '#ffc107');
+    // Crear gráficos con datos estáticos
+    createLineChart('tiempoRutaChart', kpiData.tiempo_por_ruta, 'Tiempo por Ruta (horas)', '#6c757d');
+    createLineChart('tendenciaCostosChart', kpiData.tendencia_costos, 'Tendencia de Costos ($)', '#fd7e14');
+
+
+
+</script>
