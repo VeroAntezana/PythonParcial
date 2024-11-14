@@ -31,7 +31,7 @@ def index():
             "productividad_flota": 310.2,
             "costo_total_km": 9.2,
             "tiempo_promedio_viaje": 7.4,
-            "utilizacion_vehiculo": 5.1,
+            "Porcentaje de entrega No entregada": 5.1,
             "tiempo_por_ruta": {
             "Ruta A-B": 7.5,
             "Ruta C-D": 8.0,
